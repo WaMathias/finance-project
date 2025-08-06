@@ -93,7 +93,7 @@ def main():
     viewer = TickerDataViewer(tickers)
     viewer.plot_price_chart(start_date, end_date)
 
-    analyze_capm_for_tickers(tickers, market_index='MSFT', start_date=start_date, end_date=end_date)
+    analyze_capm_for_tickers(tickers, market_index='RHM.DE', start_date=start_date, end_date=end_date)
 
 
 if __name__ == "__main__":
