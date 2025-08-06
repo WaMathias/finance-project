@@ -1,3 +1,5 @@
+# TickerDataViewer.py
+
 import yfinance as yf
 import matplotlib.pyplot as plt
 

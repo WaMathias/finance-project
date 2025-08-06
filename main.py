@@ -1,3 +1,5 @@
+# main.py
+
 import time
 import datetime
 
@@ -20,7 +22,7 @@ def run_analysis(tickers, start_date, end_date, weights=None, alpha=0.95):
 
 
 if __name__ == "__main__":
-    tickers = ['AAPL', 'RHM.DE']
+    tickers = ['AAPL', 'RHM.DE', 'AMD', 'LRCX', 'NVDA', 'MU', 'NFLX', 'PARA', 'ROKU', 'BAC', 'GOOGL', 'INTC', 'TGT', 'AMC']
     start_date = datetime.datetime(2024, 1, 1)
     end_date = datetime.datetime.fromtimestamp(time.time())
 
