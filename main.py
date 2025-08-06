@@ -1,8 +1,10 @@
 import time
 import datetime
 
+import RiskAnalyzer
 from DataLoader import FinancialDataLoader
 from RiskAnalyzer import PortfolioRiskAnalyzer
+from StockAnalyzer import StockAnalyzer
 from TickerDataViewer import TickerDataViewer
 
 
@@ -23,8 +25,16 @@ if __name__ == "__main__":
     end_date = datetime.datetime.fromtimestamp(time.time())
 
     run_analysis(tickers, start_date, end_date, weights=None, alpha=0.95)
+    RiskAnalyzer.PortfolioRiskAnalyzer.calculate_capm(stock_returns=, market_returns=, risk_free_rate=)
+
+    StockAnalyzer.analyze()
+    StockAnalyzer.display_price_data()
+    StockAnalyzer.display_dividend_info()
+    StockAnalyzer.display_company_structure()
+    StockAnalyzer.display_valuation_metrics()
+    StockAnalyzer.display_fundamental_data()
+    StockAnalyzer.display_company_description()
+    StockAnalyzer.display_dividend_history()
 
     viewer = TickerDataViewer(tickers)
-    viewer.print_summaries()
     viewer.plot_chart(start_date, end_date)
-

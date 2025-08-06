@@ -1,11 +1,7 @@
-import time
-
 import numpy as np
-import yfinance as yf
-import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
-import statsmodels.api as sm
+
 
 class PortfolioRiskAnalyzer:
     def __init__(self, prices: pd.DataFrame, weights: np.ndarray = None, alpha: float = 0.95):
@@ -67,12 +63,6 @@ class PortfolioRiskAnalyzer:
         plt.tight_layout()
         plt.show()
 
-    def report(self):
-        asset_info = f"{len(self.weights)} Asset{'s' if len(self.weights) > 1 else ''}"
-        print(f"Portfolio mit {asset_info} und α = {self.alpha:.0%}")
-        print(f'→ VaR:  {self.var:.4%}')
-        print(f'→ CVaR: {self.cvar:.4%}')
-
     def calculate_capm(stock_returns, market_returns, risk_free_rate):
         excess_stock = stock_returns - risk_free_rate
         excess_market = market_returns - risk_free_rate
@@ -83,3 +73,9 @@ class PortfolioRiskAnalyzer:
         beta = model.params[1]
         alpha = model.params[0]
         return alpha, beta, model
+
+    def report(self):
+        asset_info = f"{len(self.weights)} Asset{'s' if len(self.weights) > 1 else ''}"
+        print(f"Portfolio mit {asset_info} und α = {self.alpha:.0%}")
+        print(f'→ VaR:  {self.var:.4%}')
+        print(f'→ CVaR: {self.cvar:.4%}')
