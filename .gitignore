@@ -1,3 +1,8 @@
-# gitignore
+# Ignoriere die .env-Datei
+.env
 
-/home/mathias/PycharmProjects/cvar_calculator/.env
+# Ignoriere andere temporäre Dateien
+*.log
+*.pyc
+__pycache__/
+.venv/

@@ -1,9 +1,9 @@
 import datetime
 import time
 
-from DataLoader import FinancialDataLoader
-from StockAnalyzer import StockAnalyzer
-from TickerDataViewer import TickerDataViewer
+from src.data.DataLoader import FinancialDataLoader
+from src.analyzer.StockAnalyzer import StockAnalyzer
+from src.data.TickerDataViewer import TickerDataViewer
 
 def main():
     tickers = ['AAPL', 'MSFT', 'GOOGL']
