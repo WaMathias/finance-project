@@ -13,14 +13,60 @@ def analyze_capm_for_tickers(tickers: list, market_index: str, start_date, end_d
     """
     from src.data.DataLoader import get_daily_returns, get_risk_free_rate
 
-    market_returns = get_daily_returns(market_index, start_date, end_date)
+    market_returns_df = get_daily_returns(market_index, start_date, end_date)
     risk_free = get_risk_free_rate()
 
     if debug:
         print(f"[DEBUG] Risk-free rate (annual): {risk_free}")
+        print(f"[DEBUG] Market returns type: {type(market_returns_df)}")
+        print(
+            f"[DEBUG] Market returns shape: {market_returns_df.shape if hasattr(market_returns_df, 'shape') else 'no shape'}")
+        if hasattr(market_returns_df, 'columns'):
+            print(f"[DEBUG] Market returns columns: {list(market_returns_df.columns)}")
+
+    # DataFrame in Series konvertieren - nehme die erste Spalte oder die Spalte mit dem Ticker-Namen
+    if isinstance(market_returns_df, pd.DataFrame):
+        if market_index in market_returns_df.columns:
+            market_returns = market_returns_df[market_index]
+        else:
+            # Nehme die erste Spalte, falls der Ticker-Name nicht als Spalte existiert
+            market_returns = market_returns_df.iloc[:, 0]
+            if debug:
+                print(
+                    f"[DEBUG] Market ticker '{market_index}' nicht in Spalten gefunden, nehme erste Spalte: {market_returns_df.columns[0]}")
+    else:
+        market_returns = market_returns_df
+
+    if debug:
+        print(f"[DEBUG] Market returns nach Konvertierung: type={type(market_returns)}, length={len(market_returns)}")
 
     for ticker in tickers:
-        stock_returns = get_daily_returns(ticker, start_date, end_date)
+        stock_returns_df = get_daily_returns(ticker, start_date, end_date)
+
+        if debug:
+            print(f"\n[DEBUG] Processing {ticker}")
+            print(f"[DEBUG] Stock returns type: {type(stock_returns_df)}")
+            print(
+                f"[DEBUG] Stock returns shape: {stock_returns_df.shape if hasattr(stock_returns_df, 'shape') else 'no shape'}")
+            if hasattr(stock_returns_df, 'columns'):
+                print(f"[DEBUG] Stock returns columns: {list(stock_returns_df.columns)}")
+
+        # DataFrame in Series konvertieren
+        if isinstance(stock_returns_df, pd.DataFrame):
+            if ticker in stock_returns_df.columns:
+                stock_returns = stock_returns_df[ticker]
+            else:
+                # Nehme die erste Spalte, falls der Ticker-Name nicht als Spalte existiert
+                stock_returns = stock_returns_df.iloc[:, 0]
+                if debug:
+                    print(
+                        f"[DEBUG] Stock ticker '{ticker}' nicht in Spalten gefunden, nehme erste Spalte: {stock_returns_df.columns[0]}")
+        else:
+            stock_returns = stock_returns_df
+
+        if debug:
+            print(f"[DEBUG] Stock returns nach Konvertierung: type={type(stock_returns)}, length={len(stock_returns)}")
+
         capm_result = compute_capm(stock_returns, market_returns, risk_free, debug=debug)
         print(f"\n--- CAPM Analysis for {ticker} ---")
         for key, val in capm_result.items():
