@@ -1,13 +1,17 @@
 import datetime
 import time
 
+import numpy as np
+
 from src.analyzer.StockAnalyzer import StockAnalyzer
 from src.data.TickerDataViewer import TickerDataViewer
 from modules.models.capm import compute_capm, plot_capm
 from src.data.DataLoader import *
+from src.modules.models.cvar import analyze_portfolio_cvar
+from src.modules.models.var import analyze_portfolio_var
 
 
-def analyze_capm_for_tickers(tickers: list, market_index: str, start_date, end_date, debug=False):
+def analyze_capm_for_tickers(tickers: list, market_index: list[str], start_date, end_date, debug=False):
     """
     Führt die CAPM-Analyse für eine Liste von Tickers durch.
     """
@@ -24,12 +28,10 @@ def analyze_capm_for_tickers(tickers: list, market_index: str, start_date, end_d
         if hasattr(market_returns_df, 'columns'):
             print(f"[DEBUG] Market returns columns: {list(market_returns_df.columns)}")
 
-    # DataFrame in Series konvertieren - nehme die erste Spalte oder die Spalte mit dem Ticker-Namen
     if isinstance(market_returns_df, pd.DataFrame):
         if market_index in market_returns_df.columns:
             market_returns = market_returns_df[market_index]
         else:
-            # Nehme die erste Spalte, falls der Ticker-Name nicht als Spalte existiert
             market_returns = market_returns_df.iloc[:, 0]
             if debug:
                 print(
@@ -51,12 +53,10 @@ def analyze_capm_for_tickers(tickers: list, market_index: str, start_date, end_d
             if hasattr(stock_returns_df, 'columns'):
                 print(f"[DEBUG] Stock returns columns: {list(stock_returns_df.columns)}")
 
-        # DataFrame in Series konvertieren
         if isinstance(stock_returns_df, pd.DataFrame):
             if ticker in stock_returns_df.columns:
                 stock_returns = stock_returns_df[ticker]
             else:
-                # Nehme die erste Spalte, falls der Ticker-Name nicht als Spalte existiert
                 stock_returns = stock_returns_df.iloc[:, 0]
                 if debug:
                     print(
@@ -94,6 +94,13 @@ def main():
     viewer.plot_price_chart(start_date, end_date)
 
     analyze_capm_for_tickers(tickers, market_index='RHM.DE', start_date=start_date, end_date=end_date)
+
+    weights = np.array([0.4, 0.3, 0.3])
+
+    returns_df = get_daily_returns(tickers, start_date, end_date)
+    var_results = analyze_portfolio_var(returns_df, weights)
+    cvar_results = analyze_portfolio_cvar(returns_df, weights)
+
 
 
 if __name__ == "__main__":

@@ -1,8 +1,10 @@
+import datetime
 import os
 from dotenv import load_dotenv
 import requests
 import yfinance as yf
 import pandas as pd
+from pandas import DataFrame
 
 # Load API keys from .env
 load_dotenv()
@@ -35,7 +37,7 @@ def get_price_data(ticker: str, start: str, end: str) -> pd.DataFrame:
     return data["Close"]
 
 
-def get_daily_returns(ticker: str, start: str, end: str) -> pd.Series:
+def get_daily_returns(ticker: list[str], start: datetime.datetime, end: datetime.datetime) -> DataFrame:
     """Calculate daily returns from price data."""
     prices = get_price_data(ticker, start, end)
     return prices.pct_change().dropna()

@@ -27,7 +27,6 @@ def compute_capm(stock_returns: pd.Series, market_returns: pd.Series, risk_free_
             print(f"[DEBUG] Stock returns index range: {stock_returns.index.min()} to {stock_returns.index.max()}")
             print(f"[DEBUG] Market returns index range: {market_returns.index.min()} to {market_returns.index.max()}")
 
-    # Validierung der Input-Daten
     if not isinstance(stock_returns, pd.Series):
         raise TypeError(f"stock_returns muss eine pandas Series sein, bekommen: {type(stock_returns)}")
     if not isinstance(market_returns, pd.Series):
@@ -36,7 +35,6 @@ def compute_capm(stock_returns: pd.Series, market_returns: pd.Series, risk_free_
     if len(stock_returns) == 0 or len(market_returns) == 0:
         raise ValueError("Eine der Input-Series ist leer!")
 
-    # Erst die beiden Hauptserien alignieren
     stock_aligned, market_aligned = stock_returns.align(market_returns, join='inner')
 
     if debug:
@@ -47,10 +45,8 @@ def compute_capm(stock_returns: pd.Series, market_returns: pd.Series, risk_free_
     if len(stock_aligned) == 0:
         raise ValueError("Nach Alignment keine gemeinsamen Datenpunkte gefunden!")
 
-    # Risk-Free Rate für den gemeinsamen Index
     daily_risk_free = risk_free_rate / 252
 
-    # Excess Returns berechnen
     excess_stock = stock_aligned - daily_risk_free
     excess_market = market_aligned - daily_risk_free
 
@@ -58,9 +54,7 @@ def compute_capm(stock_returns: pd.Series, market_returns: pd.Series, risk_free_
         print(
             f"[DEBUG] Excess returns berechnet. NaN counts: stock={excess_stock.isna().sum()}, market={excess_market.isna().sum()}")
 
-    # Sicherstellen, dass beide Series sind und dann kombinieren
     try:
-        # Beide Series in einem DataFrame kombinieren und NaNs entfernen
         combined_data = pd.concat([excess_stock, excess_market], axis=1, keys=['excess_stock', 'excess_market'])
         valid_data = combined_data.dropna()
 
@@ -116,7 +110,6 @@ def plot_capm(stock_returns: pd.Series, market_returns: pd.Series, risk_free_rat
     """
     Plottet die Regression der Überschussrenditen von Aktie vs Markt.
     """
-    # Validierung der Input-Daten
     if not isinstance(stock_returns, pd.Series) or not isinstance(market_returns, pd.Series):
         print(f"Warnung: Ungültige Datentypen für Plot von {ticker}")
         return
@@ -125,7 +118,6 @@ def plot_capm(stock_returns: pd.Series, market_returns: pd.Series, risk_free_rat
         print(f"Warnung: Leere Daten für Plot von {ticker}")
         return
 
-    # Erst die beiden Hauptserien alignieren
     stock_aligned, market_aligned = stock_returns.align(market_returns, join='inner')
 
     if len(stock_aligned) == 0:
@@ -137,7 +129,6 @@ def plot_capm(stock_returns: pd.Series, market_returns: pd.Series, risk_free_rat
     excess_stock = stock_aligned - daily_risk_free
     excess_market = market_aligned - daily_risk_free
 
-    # Beide Series in einem DataFrame kombinieren und NaNs entfernen
     try:
         combined_data = pd.concat([excess_stock, excess_market], axis=1, keys=['excess_stock', 'excess_market'])
         valid_data = combined_data.dropna()
