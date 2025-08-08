@@ -79,27 +79,28 @@ def main():
     start_date = datetime.datetime(2024, 1, 1)
     end_date = datetime.datetime.fromtimestamp(time.time())
 
-    # Load price data
     loader = FinancialDataLoader(tickers, start_date, end_date)
     prices = loader.load_price_data()
     print(prices.tail())
 
-    # Analyze each stock
     for ticker in tickers:
         analyzer = StockAnalyzer(ticker)
         analyzer.display_all()
 
-    # Plot prices
     viewer = TickerDataViewer(tickers)
     viewer.plot_price_chart(start_date, end_date)
 
     analyze_capm_for_tickers(tickers, market_index='RHM.DE', start_date=start_date, end_date=end_date)
 
     weights = np.array([0.4, 0.3, 0.3])
-
     returns_df = get_daily_returns(tickers, start_date, end_date)
+
     var_results = analyze_portfolio_var(returns_df, weights)
     cvar_results = analyze_portfolio_cvar(returns_df, weights)
+
+    print("\n--- Portfolio Risk Metrics ---")
+    for k, v in {**var_results, **cvar_results}.items():
+        print(f"{k}: {v:.4f}")
 
 
 
